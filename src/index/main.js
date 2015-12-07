@@ -3,18 +3,17 @@
  * @author: lidianbin(lidianbin@baidu.com)
  * @Date:   2015-12-03 13:20:06
  * @Last Modified by:   lidianbin
- * @Last Modified time: 2015-12-07 16:14:48
+ * @Last Modified time: 2015-12-07 18:11:54
  */
 
 'use strict';
 define(function (require) {
+    var fastClick = require('fastclick');
     var Vue = require('vue');
 
     var photoPage = {
-
         photoPageVue: null,
         init: function (firstTag, secondTag, photoData) {
-
             this.photoPageVue = new Vue({
                 el: '.photo-page',
                 data: {
@@ -35,7 +34,16 @@ define(function (require) {
                         // 方法内 `this` 指向 vm
                         console.log(photo);
                         // `event` 是原生 DOM 事件
-                    
+                    },
+
+                    backFirstList: function () {
+                        photoPage.hide();
+                        tagsPage.show(tagsPage.firstPageElm);
+                    },
+
+                    backSecondList: function () {
+                        photoPage.hide();
+                        tagsPage.show(tagsPage.secondPageElm);
                     }
                 }
             });
@@ -56,6 +64,10 @@ define(function (require) {
                 typeof callback === 'function' && callback();
                 $('.photo-page').show();
             }.bind(this));
+        },
+
+        hide: function () {
+            $('.photo-page').hide();
         }
     };
 
@@ -163,6 +175,7 @@ define(function (require) {
 
     var page = {
         init: function () {
+            fastClick.attach(document.body);
             tagsPage.init();
         }
     };

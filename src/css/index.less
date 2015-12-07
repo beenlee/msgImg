@@ -1,5 +1,16 @@
 @bg-primary: #337ab7;
 
+.header {
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 10;
+}
+
+.main {
+    margin-top: 40px;
+}
 
 .first-tag-page {
     display: none;
@@ -56,4 +67,14 @@
         background: @bg-primary;
         color: #ffffff;
     }
+
+    .photo-item {
+        width: 100%;
+        overflow: hidden;
+        img {
+            width: 100%;
+        }
+    }
 }
+
+

@@ -11,7 +11,7 @@
     <title>状态配图</title>
 </head>
 <body>
-    <div class="container">
+    <div class="container header">
         <div class="row bg-primary">
             <div class="col-xs-3 text-center">
                 <h4>back</h4>
@@ -23,6 +23,8 @@
                 <h4>搜索</h4>
             </div>  
         </div>
+    </div>    
+    <div class="container main">
         <div class="row first-tag-page">
             <div class="col-xs-12 text-center text-primary">
                 <h3>选择您想要的标签</h3>
@@ -50,7 +52,7 @@
         </div>
         <div class="row photo-page" style="display:none;">
             <div class="col-xs-12 text-left text-primary">
-                <div class="tag-nav" @click="backFirstList()">
+                <div class="tag-nav " @click="backFirstList()">
                     {{nav.first.text}}
                 </div>
                 <div class="tag-nav" @click="backSecondList()">
@@ -59,10 +61,16 @@
             </div>
             <div class="col-xs-12 text-center text-primary">
                 <ul class="photo-list list-inline">
-                    <li class="photo-item" v-for="item in photos.list" @click="choosePhoto(item, $event)"  >
-                        <img src="{{item.url}}">
+                    <li class="photo-item thumbnail" v-for="item in photos.list" @click="choosePhoto(item, $event)"  >
+                        <a href="{{item.url}}">
+                        <img v-bind:src="item.url" class="">
+                        </a>
                     </li>
                 </ul>
+                <div class="pullup-load-more">
+                    <span class = "icon-double-angle-up pull-up-icon"></span>
+                    <span id = "pullUp-msg" class = "pull-up-msg">上拉刷新</span>
+                </div>
             </div>
         </div>
     </div>
@@ -71,6 +79,8 @@
     <script src="//s1.bdstatic.com/r/www/cache/ecom/esl/2-0-6/esl.source.js"></script>
     <script src="./dep/jquery/jquery-1.11.3.js"></script>
     <script src="./dep/bootstrap-3.3.5/dist/js/bootstrap.min.js"></script>
-    <script src="./src/js/main.js"></script>
+    <script src="./dep/hammer/2.0.4/src/hammer.js"></script>
+    <script src="./dep/jquery-hammer/jquery.hammer.js"></script>
+    <script src="./src/main.js"></script>
 </body>
 </html>

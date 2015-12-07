@@ -13,7 +13,10 @@
         "loaderAutoConfig": "js,htm,html,tpl,vm,phtml",
         "loaderUrl": "http://s1.bdstatic.com/r/www/cache/ecom/esl/1-8-2/esl.js",
         "dependencies": {
-            "jquery": "~1.11.1"
+            "jquery": "~1.11.1",
+            "bootstrap-3.3.5": "~3.3.5",
+            "fastclick": "~1.0.6",
+            "hammer": "~2.0.4"
         }
     },
     "dependencies": {},
