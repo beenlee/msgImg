@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta name="screen-orientation" content="portrait">
+    <link rel="stylesheet" href="./dep/bootstrap-3.3.5/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./dep/bootstrap-3.3.5/dist/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="./src/css/index.css">
+    <title>状态配图</title>
+</head>
+<body>
+    <div class="container">
+        <div class="row bg-primary">
+            <div class="col-xs-3 text-center">
+                <h4>back</h4>
+            </div> 
+            <div class="col-xs-6 text-center">
+                <h4>魔法配图</h4>
+            </div> 
+            <div class="col-xs-3 text-center">
+                <h4>搜索</h4>
+            </div>  
+        </div>
+        <div class="row first-tag-page">
+            <div class="col-xs-12 text-center text-primary">
+                <h3>选择您想要的标签</h3>
+                <ul class="tag-first-list list-inline">
+                    <li class="tag-item" v-for="item in tagsFirstList" v-on:click="chooseFirstTag(item, $event)"  >
+                        <div class="tag-item-text">{{item.text}}</div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="row second-tag-page" style="display:none;">
+            <div class="col-xs-12 text-left text-primary">
+                <div class="tag-nav" @click="backFirstList()">
+                    {{nav.text}}
+                </div>
+            </div>
+            <div class="col-xs-12 text-center text-primary">
+                
+                <ul class="tag-second-list list-inline">
+                    <li class="tag-item" v-for="item in tagsSecondList" v-on:click="chooseSecondTag(item, $event)"  >
+                        <div  class="tag-item-text">{{item.text}}</div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="row photo-page" style="display:none;">
+            <div class="col-xs-12 text-left text-primary">
+                <div class="tag-nav" @click="backFirstList()">
+                    {{nav.first.text}}
+                </div>
+                <div class="tag-nav" @click="backSecondList()">
+                    {{nav.second.text}}
+                </div>
+            </div>
+            <div class="col-xs-12 text-center text-primary">
+                <ul class="photo-list list-inline">
+                    <li class="photo-item" v-for="item in photos.list" @click="choosePhoto(item, $event)"  >
+                        <img src="{{item.url}}">
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="//s1.bdstatic.com/r/www/cache/ecom/esl/2-0-6/esl.source.js"></script>
+    <script src="./dep/jquery/jquery-1.11.3.js"></script>
+    <script src="./dep/bootstrap-3.3.5/dist/js/bootstrap.min.js"></script>
+    <script src="./src/js/main.js"></script>
+</body>
+</html>
