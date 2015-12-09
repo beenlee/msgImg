@@ -3,7 +3,7 @@
  * @author: lidianbin(lidianbin@baidu.com)
  * @Date:   2015-12-03 13:20:06
  * @Last Modified by:   lidianbin
- * @Last Modified time: 2015-12-07 18:11:54
+ * @Last Modified time: 2015-12-09 15:25:39
  */
 
 'use strict';
@@ -11,9 +11,27 @@ define(function (require) {
     var fastClick = require('fastclick');
     var Vue = require('vue');
 
+    var tagsPage;
+    var photoPage;
+
+    var events = {
+        init: function () {
+
+            // this.initScroll();
+            $(window).scroll(function (e) {
+                // var scrollTop = $(this).scrollTop
+                // console.log(e.target.scrollTop + e.target.clientHeight, '/', e.target.scrollHeight);
+                if ($(this).scrollTop() + $(this).height() >= $(document).height()) {
+                    photoPage.photoPageVue.$emit('loadMore');
+                }
+            });
+        }
+    };
+
+
     var photoPage = {
         photoPageVue: null,
-        init: function (firstTag, secondTag, photoData) {
+        init: function (firstTag, secondTag) {
             this.photoPageVue = new Vue({
                 el: '.photo-page',
                 data: {
@@ -22,11 +40,15 @@ define(function (require) {
                         second: secondTag
                     },
                     photos: {
-                        pageSize: photoData.pageSize,
-                        currentPage: photoData.currentPage,
-                        total: photoData.total,
-                        list: photoData.pictures
-                    }
+                        pageSize: 10,
+                        currentPage: 0,
+                        total: 0,
+                        list: []
+                    },
+                    loadStatus: 0
+                },
+                events: {
+                    loadMore: 'loadMore'
                 },
                 methods: {
                     choosePhoto: function (photo, event) {
@@ -44,26 +66,106 @@ define(function (require) {
                     backSecondList: function () {
                         photoPage.hide();
                         tagsPage.show(tagsPage.secondPageElm);
+                    },
+
+                    loadMore: function () {
+                        console.log('do loadMore img');
+                        if (this.loadStatus !== 0) {
+                            // consloe.log('status:', this.loadStatus);
+                            // this.loadStatus = 0;
+                            return false;
+                        }
+                        this.loadStatus = 1;
+                        var page = this.photos.currentPage + 1;
+                        var pageSize = this.photos.pageSize;
+                        var tagId = this.nav.second.id;
+                        var url = '/hack/picture/pagination/' + tagId + '/' + page + '/' + pageSize;
+
+                        // test
+                        // url = '/picture/pagination/1/1/10';
+
+                        $.getJSON(url, function (data) {
+                            if (data.status === 0) {
+                                this.photos.currentPage = data.data.currentPage;
+                                this.photos.total = data.data.total;
+                                if (data.data.pictures && data.data.pictures.length > 0) {
+                                    $.each(data.data.pictures, function (index, item) {
+                                        this.photos.list.push(item);
+                                    }.bind(this));
+                                }
+                                if (data.data.currentPage * this.photos.pageSize >= this.photos.total) {
+                                    this.loadStatus = 2;
+                                }
+                                else {
+                                    this.loadStatus = 0;
+                                }
+                            }
+                            else {
+                                console.log('服务器异常：', data.msg);
+                                this.loadStatus = 0;
+                            }
+                            // this.refreshScroll();
+                        }.bind(this));
                     }
                 }
             });
+            // this.initScroll();
         },
 
-        show: function (firstTag, secondTag, callback) {
-            // var url = '/picture/pagination/' + secondTag.id + '/1/10';
-            var url = '/picture/pagination/1/1/10';
-            $.getJSON(url, function (data) {
+        // initScroll: function () {
+        //     console.log('initScroll');
+        //     var loadIScroll = new IScroll('.iScroll-wrapper', {
+        //         // scrollbarClass: 'myScrollbar', /* 重要样式 */
+        //         // useTransition: false,
+        //         click: false,
+        //         momentum: true
+        //     });
 
-                if (this.photoPageVue) {
-                    this.photoPageVue.nav.first = firstTag;
-                    this.photoPageVue.nav.second = secondTag;
-                }
-                else {
-                    this.init(firstTag, secondTag, data.data);
-                }
-                typeof callback === 'function' && callback();
-                $('.photo-page').show();
-            }.bind(this));
+        //     loadIScroll.on('scrollStart', function (e) {
+        //         alert('scrollStart');
+        //         console.log('start', this.y, '-', this.directionY);
+        //         // if (this.y >= -offset || this.directionY === -1) {
+        //         //     isPull = true;
+        //         // }
+
+        //     });
+        //     loadIScroll.on('scrollEnd', function () {
+        //         alert('scrollEnd');
+        //         console.log('结束了：' + this.directionY, this.y, this.distY);
+        //         // if (isPull && this.y == 0 && this.distY >= tabHeight) {
+        //         //     console.log('下拉刷新');
+        //         //     sendPageData.page.currentPage = 1;
+        //         //     // that.pullDown(sendPageData);
+        //         // }else if (this.y <= -scrollHeight) {
+        //         //     console.log('上拉加载');
+        //         //     // that.upDown();
+        //         // }
+        //         // isPull = false;
+        //     });
+
+        //     document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false);
+        // },
+
+        show: function (firstTag, secondTag, callback) {
+            if (!this.photoPageVue) {
+                this.init(firstTag, secondTag);
+            }
+            else {
+                this.reset(firstTag, secondTag);
+            }
+            this.photoPageVue.$emit('loadMore');
+            typeof callback === 'function' && callback();
+            $('.photo-page').show();
+        },
+
+        reset: function (firstTag, secondTag) {
+            this.photoPageVue.nav.first = firstTag;
+            this.photoPageVue.nav.second = secondTag;
+            this.photoPageVue.photos.pageSize = 10;
+            this.photoPageVue.photos.currentPage = 0;
+            this.photoPageVue.photos.total = 0;
+            this.photoPageVue.photos.list = [];
+            this.photoPageVue.loadStatus = 0;
         },
 
         hide: function () {
@@ -88,12 +190,12 @@ define(function (require) {
         },
 
         firstPageInit: function (callback) {
-            var url = '/parentLabel/all';
+            var url = '/hack/parentLabel/all';
             $.getJSON(url, function (data) {
                 this.firstPageVue = new Vue({
                     el: '.first-tag-page',
                     data: {
-                        tagsFirstList: data.data.tagList
+                        tagsFirstList: data.data
                     },
                     methods: {
                         chooseFirstTag: function (firstTag, event) {
@@ -148,10 +250,10 @@ define(function (require) {
         },
 
         getScondePageInfo: function (firstTag, callback) {
-            var url = '/childrenLabel/parent/1';
-            // var url  = '/childrenLabel/parent/' + firstTag.id;
+            // var url = '/childrenLabel/parent/1';
+            var url  = '/hack/childrenLabel/parent/' + firstTag.id;
             $.getJSON(url, {id: firstTag.id}, function (data) {
-                var secondTag = data.data.tagList;
+                var secondTag = data.data;
                 if (this.secondPageVue) {
                     this.secondPageVue.nav = firstTag;
                     this.secondPageVue.tagsSecondList = secondTag;
@@ -174,9 +276,11 @@ define(function (require) {
 
 
     var page = {
+
         init: function () {
             fastClick.attach(document.body);
             tagsPage.init();
+            events.init();
         }
     };
 

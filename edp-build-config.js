@@ -57,7 +57,11 @@ exports.exclude = [
     '.DS_Store',
     '*.tmp',
     '*.bak',
-    '*.swp'
+    '*.swp',
+    'mock',
+    'node_modules',
+    'autoreponse-config.js',
+    'package.json'
 ];
 
 /* eslint-disable guard-for-in */

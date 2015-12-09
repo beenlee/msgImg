@@ -8,9 +8,9 @@
 console.log('sss');
 // mock路径
 var MOCK_PATH = {
-    '/parentLabel/all': '/mock/data/a.json',
-    '/childrenLabel/parent/1': '/mock/data/b.json',
-    '/picture/pagination/1/1/10': '/mock/data/c.json'
+    '/hack/parentLabel/all': '/mock/data/a.json',
+    '/hack/childrenLabel/parent/**': '/mock/data/b.json',
+    '/hack/picture/pagination/**': '/mock/data/c.json'
 };
 
 // mock 路径检测
