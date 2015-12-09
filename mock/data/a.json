@@ -1,7 +1,6 @@
 {
     "status": 0,
-    "data": {
-        "tagList": [
+    "data": [
             {"firstLabel": "aaa", "id": "1111"},
             {"firstLabel": "bbb", "id": "1112"},
             {"firstLabel": "cccc", "id": "1113"},
@@ -11,5 +10,4 @@
             {"firstLabel": "bbb", "id": "1117"},
             {"firstLabel": "bbb", "id": "1118"}
         ]
-    }
 }

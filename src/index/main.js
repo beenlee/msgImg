@@ -3,7 +3,7 @@
  * @author: lidianbin(lidianbin@baidu.com)
  * @Date:   2015-12-03 13:20:06
  * @Last Modified by:   lidianbin
- * @Last Modified time: 2015-12-09 15:25:39
+ * @Last Modified time: 2015-12-09 22:09:41
  */
 
 'use strict';
@@ -24,6 +24,13 @@ define(function (require) {
                 if ($(this).scrollTop() + $(this).height() >= $(document).height()) {
                     photoPage.photoPageVue.$emit('loadMore');
                 }
+                if ($(this).scrollTop() > $(this).height()) {
+                    $('.back-top').show();
+                }
+                else {
+                    $('.back-top').hide();
+                }
+
             });
         }
     };
@@ -68,6 +75,10 @@ define(function (require) {
                         tagsPage.show(tagsPage.secondPageElm);
                     },
 
+                    backTop: function () {
+                        $(window).scrollTop(0);
+                    },
+
                     loadMore: function () {
                         console.log('do loadMore img');
                         if (this.loadStatus !== 0) {
@@ -82,7 +93,7 @@ define(function (require) {
                         var url = '/hack/picture/pagination/' + tagId + '/' + page + '/' + pageSize;
 
                         // test
-                        // url = '/picture/pagination/1/1/10';
+                        url = '/hack/picture/pagination';
 
                         $.getJSON(url, function (data) {
                             if (data.status === 0) {
@@ -250,8 +261,9 @@ define(function (require) {
         },
 
         getScondePageInfo: function (firstTag, callback) {
-            // var url = '/childrenLabel/parent/1';
             var url  = '/hack/childrenLabel/parent/' + firstTag.id;
+            // test
+            url = '/hack/childrenLabel/parent';
             $.getJSON(url, {id: firstTag.id}, function (data) {
                 var secondTag = data.data;
                 if (this.secondPageVue) {

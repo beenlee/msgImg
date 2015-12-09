@@ -1,3 +1,4 @@
+@import "../../dep/bootstrap-3.3.5/less/mixins.less";
 @bg-primary: #337ab7;
 
 // html,
@@ -6,6 +7,7 @@
 // }
 
 .header {
+    
     position: fixed;
     top: 0;
     left: 0;
@@ -13,13 +15,24 @@
 
     width: 100%;
     height: 40px;
+
+    box-shadow: 0 1px 3px rgba(0,0,0,.25);
 }
 
 .main {
     box-sizing: border-box;
     padding-top: 40px;
+    padding-bottom: 30px;
     height: 100%;
     overflow-y: auto;
+}
+.footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    z-index: 10;
+    width: 100%;
+    height: 40px;   
 }
 
 .first-tag-page {
@@ -49,11 +62,16 @@
     transform: translateY(-50%);
 }
 
-
+.photo-page,
 .second-tag-page {
     // display: none;
+    .nav-wrap {
+        position: fixed;
+        z-index: 10;
+        background: #ffffff;
+        //.perspective(500);
+    }
     .tag-nav {
-
         float: left;
         margin: 5px;
 
@@ -65,25 +83,11 @@
         background: @bg-primary;
         color: #ffffff;
     }
-}
-
-.photo-page {
-    
-    .tag-nav {
-
-        float: left;
-        margin: 5px;
-
-        height: 40px;
-        padding: 10px;
-        // border: 1px solid #444444;
-        border-radius: 20px;
-
-        background: @bg-primary;
-        color: #ffffff;
+    .tag-nav:last-child {
+        .animation(flipX 2s);
     }
-
-    .photo-list-wrap {
+    .list-wrap {
+        margin-top: 50px;
         // position: absolute;
         // z-index: 5;
         // top: 100px;
@@ -94,11 +98,13 @@
         // overflow: hidden;
     }
 
+}
+
+.photo-page {
     .photo-list {
         // position: absolute;
         // z-index: 5;
     }
-
     .photo-item {
         width: 100%;
         overflow: hidden;
@@ -111,6 +117,63 @@
         margin-bottom: 20px;
     }
 }
+
+.back-top {
+    position: fixed;
+    .square(40px);
+    right: 10px;
+    bottom: 50px;
+    border-radius: 20px;
+    overflow: hidden;
+    // width: 40px;
+    // height: 40px;
+    .animation(flipY 3s);
+}
+.back-top-mask {
+    background: #000000;
+    .square(100%);
+    .opacity(0.5);
+}
+
+.back-top-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    .square(100%);
+    line-height: 40px;
+    color: #ffffff;
+}
+@keyframes flipY {
+    from {
+        transform:rotateY(0deg);
+    }
+    to {
+        transform:rotateY(360deg);
+    }
+}
+
+@keyframes flipX {
+    from {
+        transform:rotateX(0deg);
+    }
+    to {
+        transform:rotateX(360deg);
+    }
+}
+
+/* 小屏幕（平板，大于等于 768px） */
+@media (min-width: 640px) {
+    .photo-page {
+        .photo-item {
+            width: 300px;
+            overflow: hidden;
+            img {
+                width: 100%;
+            }
+        }
+    }
+}
+
 
 // .iScroll-wrapper {
 //   position: absolute;

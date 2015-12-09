@@ -41,7 +41,7 @@
                     {{nav.firstLabel}}
                 </div>
             </div>
-            <div class="col-xs-12 text-center text-primary">
+            <div class="list-wrap col-xs-12 text-center text-primary">
                 
                 <ul class="tag-second-list list-inline">
                     <li class="tag-item" v-for="item in tagsSecondList" v-on:click="chooseSecondTag(item, $event)"  >
@@ -60,7 +60,7 @@
                 </div>
             </div>
 
-            <div class="photo-list-wrap col-xs-12 text-center text-primary">
+            <div class="list-wrap col-xs-12 text-center text-primary">
                 <div class="iScroll-wrapper">
                     <div class="scroller">
                         <div class="pull-down">
@@ -74,17 +74,28 @@
                         </ul>
                         <div class="up-down ">
 
-                            <span v-show="loadStatus == 0" class="load-more-data btn btn-info" @click="loadMore()" >加载更多</span>
+                            <span v-show="loadStatus == 0" class="load-more-data btn btn-primary" @click="loadMore()" >加载更多</span>
                             <span v-show="loadStatus == 1" class="loading-data am-icon-spinner am-icon-spin">正在加载...</span>
                             <span v-show="loadStatus == 2" class="no-more-data">没有更多了</span>
                         </div>
                     </div>
                 </div>
             </div>
+            <div @click="backTop" class="back-top" style="display:none;">
+                <div class="back-top-mask"></div>
+                <div class="back-top-content glyphicon glyphicon-arrow-up text-center"></div>
+            </div>
+        </div>
+
+    </div>
+    <div class="container footer bg-primary">
+        <div class="row ">
+            <div class="col-xs-12 text-center">
+                <h5>状态配图工具@hackthon 2015-11</h5>
+            </div>   
         </div>
     </div>
-
-   
+    
     <script src="./dep/jquery/jquery-1.11.3.js"></script>
     <script src="./dep/bootstrap-3.3.5/dist/js/bootstrap.min.js"></script>
     <script src="//s1.bdstatic.com/r/www/cache/ecom/esl/2-0-6/esl.source.js"></script>
