@@ -27,6 +27,10 @@ exports.getLocations = function () {
             handler: redirect('http://www.baidu.com', false)
         },
         {
+            location: /^\/hack\/(.*)/,
+            handler: proxy('http://cp01-icode-offline-db01.epc.baidu.com', '8000')
+        },
+        {
             location: /^\/redirect-target/,
             handler: content('redirectd!')
         },

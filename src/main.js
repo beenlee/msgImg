@@ -3,7 +3,7 @@
  * @Author: lidianbin(lidianbin@baidu.com)
  * @Date:   2015-12-03 13:15:40
  * @Last Modified by:   lidianbin
- * @Last Modified time: 2015-12-09 13:51:33
+ * @Last Modified time: 2015-12-12 23:47:27
  */
 
 'use strict';
@@ -37,3 +37,4 @@ require.config({
 require(['index/main'], function (main) {
     main.init();
 });
+
