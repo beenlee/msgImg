@@ -11,12 +11,11 @@
     <title>状态配图</title>
 </head>
 <body>
-
-    
+<div class="body">
     <div class="container-fluid header ">
         <div class="row ">
             <div class="col-xs-3 text-left" >
-                <h4 class="glyphicon glyphicon-menu-hamburger" style="display:none;"></h4>
+                <h4 class="glyphicon glyphicon-arrow-left" v-show="backBtnShow" v-on:click="backPage"></h4>
             </div> 
             <div class="col-xs-6 text-center">
                 <h4>魔法配图</h4>
@@ -26,150 +25,11 @@
             </div>  
         </div>
     </div>
-    <div class="container-fluid post-msg" v-show="show" style="display:none;">
-        <div class="row">
-            <div class="col-xs-12 col-sm-6 msg-wrap">
-                <form v-on:submit.prevent="submit">
-                    <div class="form-group">
-                        <label for="msg-input" class="text-color-primary">要发的状态</label>
-                        <input id="msg-input" placeholder="输入..." v-model="msg" class="form-control">
-                    </div>
-                    <div class="form-group">
-                        <button type="submit" class="btn bg-color-primary" v-bind:disabled="enable">生成图片</button>
-                        <span v-on:click="imgOnly" class="magic-btn text-warning text-center bg-color-primary">变</span>
-
-                    </div>
-                </form>                
-            </div>
-            <div class="col-xs-12 col-sm-6 img-wrap">
-                <canvas id="img-canvas" class="img-canvas" v-bind:width="canvasWidth" v-bind:height="canvasHeight"></canvas>
-                <img v-bind:src="cvsUrl" v-show="img">
-            </div>
-        </div>
-    </div>
+    <post-msg></post-msg>
     <div class="container-fluid main">
-        <div class="row first-tag-page">
-            <div class="col-xs-12 text-center ">
-                <h3>选择您想要的标签</h3>
-                <ul class="tag-first-list list-inline">
-                    <li class="tag-item" v-for="item in tagsFirstList"  v-on:click="chooseFirstTag(item, $event)"  >
-                        <div class="tag-item-text">{{item.firstLabel}}</div>
-                    </li>
-                </ul>
-            </div>
-        </div>
-        <div class="row second-tag-page" style="display:none;">
-            <div class="col-xs-12 text-left text-primary nav-wrap">
-                <div class="tag-nav " @click="backFirstList()">
-                    {{nav.firstLabel}}
-                </div>
-            </div>
-            <div class="list-wrap col-xs-12 text-center text-primary">
-                
-                <ul class="tag-second-list list-inline">
-                    <li class="tag-item" v-for="item in tagsSecondList" v-on:click="chooseSecondTag(item, $event)"  >
-                        <div  class="tag-item-text">{{item.secondLabel}}</div>
-                    </li>
-                </ul>
-            </div>
-        </div>
-        <div class="row photo-page" style="display:none;" >
-            <div class="col-xs-12 text-left text-color-primary nav-wrap">
-                <div class="tag-nav " @click="backFirstList()">
-                    {{nav.first.firstLabel}}
-                </div>
-                <div class="tag-nav" @click="backSecondList()">
-                    {{nav.second.secondLabel}}
-                </div>
-            </div>
-
-            <div class="list-wrap col-xs-12 text-center text-color-primary">
-                <div class="iScroll-wrapper">
-                    <div class="scroller ">
-                        <!-- <div class="pull-down">
-                            <span class="am-icon-arrow-down pull-label" style="display: none;">下拉刷新</span>
-                            <span class="am-icon-spinner am-icon-spin pull-loading" ></span>
-                        </div> -->
-                        <div class="row">
-                            <div class="col-xs-6 col-sm-3 first-list">
-                                <ul class="photo-list list-inline row">
-                                    <li v-for="item in photos.list" v-bind:class="['col-xs-12', $index%4==0 ? 'first' : '', $index%4==1 ? 'second' : '', $index%4==2 ? 'third' : '', $index%4==3 ? 'forth' : '']" @click="choosePhoto(item, $event)"  >
-                                        <div class="thumbnail photo-item">
-                                            <img v-bind:src="item.url" class="">
-                                            </img>
-                                            <!-- <div v-bind:class="['img-menu', item.showMenu ? '' : 'hide' ]"  >
-                                                <div class="img-menu-mask"></div>
-                                                <div class="img-menu-content">
-                                                    <button class="btn btn-primary">状态配图</button>
-                                                </div>
-                                            </div> -->
-                                        <div>
-                                    </li>
-                                </ul>    
-                            </div>
-                            <div class="col-xs-6 col-sm-3 second-list">
-                                <ul class="photo-list list-inline row">
-                                    <li v-for="item in photos.list" v-bind:class="[ 'col-xs-12', $index%4==0 ? 'first' : '', $index%4==1 ? 'second' : '', $index%4==2 ? 'third' : '', $index%4==3 ? 'forth' : '']" @click="choosePhoto(item, $event)"  >
-                                         <div class="thumbnail photo-item">
-                                            <img v-bind:src="item.url" class="">
-                                            </img>
-                                            <!-- <div v-bind:class="['img-menu', item.showMenu ? '' : 'hide' ]"  >
-                                                <div class="img-menu-mask"></div>
-                                                <div class="img-menu-content">
-                                                    <button class="btn btn-primary">状态配图</button>
-                                                </div>
-                                            </div> -->
-                                        <div>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="col-xs-6 col-sm-3 third-list">
-                                <ul class="photo-list list-inline row">
-                                    <li v-for="item in photos.list" v-bind:class="['col-xs-12', $index%4==0 ? 'first' : '', $index%4==1 ? 'second' : '', $index%4==2 ? 'third' : '', $index%4==3 ? 'forth' : '']" @click="choosePhoto(item, $event)"   >
-                                        <div class="thumbnail photo-item">
-                                            <img v-bind:src="item.url" class="">
-                                            </img>
-                                            <!-- <div v-bind:class="['img-menu', item.showMenu ? '' : 'hide' ]"  >
-                                                <div class="img-menu-mask"></div>
-                                                <div class="img-menu-content">
-                                                    <button class="btn btn-primary">状态配图</button>
-                                                </div>
-                                            </div> -->
-                                        <div>
-                                    </li>
-                                </ul>    
-                            </div>
-                            <div class="col-xs-6 col-sm-3 forth-list">
-                                <ul class="photo-list list-inline row">
-                                    <li v-for="item in photos.list" v-bind:class="['col-xs-12', $index%4==0 ? 'first' : '', $index%4==1 ? 'second' : '', $index%4==2 ? 'third' : '', $index%4==3 ? 'forth' : '']" @click="choosePhoto(item, $event)"  >
-                                        <div class="thumbnail photo-item">
-                                            <img v-bind:src="item.url" class="">
-                                            </img>
-                                            <!-- <div v-bind:class="['img-menu', item.showMenu ? '' : 'hide' ]"  >
-                                                <div class="img-menu-mask"></div>
-                                                <div class="img-menu-content">
-                                                    <button class="btn btn-primary">状态配图</button>
-                                                </div>
-                                            </div> -->
-                                        <div>
-                                    </li>
-                                </ul>    
-                            </div>
-                        </div>
-                        
-                        <div class="up-down ">
-                            <span v-show="loadStatus == 0" class="load-more-data btn bg-color-primary" @click="loadMore()" >加载更多</span>
-                            <span v-show="loadStatus == 1" class="loading-data am-icon-spinner am-icon-spin">正在加载...</span>
-                            <span v-show="loadStatus == 2" class="no-more-data">没有更多了</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div @click="backTop" class="back-top" style="display:none;">
-                <div class="back-top-mask"></div>
-                <div class="back-top-content glyphicon glyphicon-arrow-up text-center"></div>
-            </div>
-        </div>
+        <first-tag></first-tag>
+        <second-tag></second-tag>
+        <photo-page></photo-page>
     </div>
     <div class="container footer">
         <div class="row ">
@@ -178,7 +38,7 @@
             </div>   
         </div>
     </div>
-    
+</div>    
     <script src="./dep/jquery/jquery-1.11.3.js"></script>
     <script src="./dep/bootstrap-3.3.5/dist/js/bootstrap.min.js"></script>
     <script src="//s1.bdstatic.com/r/www/cache/ecom/esl/2-0-6/esl.source.js"></script>

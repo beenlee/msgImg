@@ -3,14 +3,16 @@
  * @Author: lidianbin(lidianbin@baidu.com)
  * @Date:   2015-12-03 13:15:40
  * @Last Modified by:   lidianbin
- * @Last Modified time: 2015-12-12 23:47:27
+ * @Last Modified time: 2015-12-15 22:00:21
  */
 
 'use strict';
 
 require.config({
     'baseUrl': '../src',
-    'paths': {},
+    'paths': {
+        'text': '../dep/text/text'
+    },
     'packages': [
         {
             'name': 'vue',
