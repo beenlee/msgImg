@@ -28,7 +28,7 @@ exports.getLocations = function () {
         },
         {
             location: /^\/hack\/(.*)/,
-            handler: proxy('http://cp01-icode-offline-db01.epc.baidu.com', '8000')
+            handler: proxy('http://114.215.83.40', '80')
         },
         {
             location: /^\/redirect-target/,

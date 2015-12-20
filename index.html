@@ -6,9 +6,11 @@
     <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
     <meta name="screen-orientation" content="portrait">
     <link rel="stylesheet" href="./dep/bootstrap-3.3.5/dist/css/bootstrap.min.css">
+    <!--
     <link rel="stylesheet" href="./dep/bootstrap-3.3.5/dist/css/bootstrap-theme.min.css">
+    -->
     <link rel="stylesheet" href="./src/css/index.css">
-    <title>状态配图</title>
+    <title>魔法配图</title>
 </head>
 <body>
 <div class="body">
@@ -34,14 +36,186 @@
     <div class="container footer">
         <div class="row ">
             <div class="col-xs-12 text-center">
-                <h5>状态配图工具@hackthon 2015-11</h5>
+                <h5>魔法配图工具@hackthon 2015-11</h5>
             </div>   
+        </div>
+    </div>
+    <!-- <div class="loading text-center" v-show="loadingShow">
+        <div class="mask"></div>
+        <div class="context text-center">
+            <h2 class="loading-icon glyphicon glyphicon-refresh"></h2>
+            <h5>加载中</h5>
+        </div>
+    </div> -->
+    <div class="progress loading" v-show="loadingShow">
+        <div class="progress-bar progress-bar-success progress-bar-striped">
+            <span class="sr-only"></span>
         </div>
     </div>
 </div>    
     <script src="./dep/jquery/jquery-1.11.3.js"></script>
-    <script src="./dep/bootstrap-3.3.5/dist/js/bootstrap.min.js"></script>
     <script src="//s1.bdstatic.com/r/www/cache/ecom/esl/2-0-6/esl.source.js"></script>
-    <script src="./src/main.js"></script>
+    <script src="./dep/vue/vue.js"></script>
+    <script src="./src/index/main.js"></script>
+    <!--
+    <script src="./dep/bootstrap-3.3.5/dist/js/bootstrap.min.js"></script>
+    -->
+    <script type = "text/javascript">
+    require.config({
+        'baseUrl': './src',
+        'paths': {
+            // 'text': '../dep/text/text',
+            'fastclick': '../dep/fastclick/1.0.6/src/fastclick',
+            'vue': '../dep/vue/vue'
+        },
+        'packages': [
+            // {
+            //     'name': 'vue',
+            //     'location': '../dep/vue',
+            //     'main': 'vue'
+            // }
+            // {
+            //     'name': 'bootstrap-3.3.5',
+            //     'location': '../dep/bootstrap-3.3.5/dist',
+            //     'main': 'js/bootstrap'
+            // },
+            // {
+            //     'name': 'jquery',
+            //     'location': '../dep/jquery/1.11.1/src',
+            //     'main': 'jquery'
+            // }
+        ]
+    });
+    require(['index/main'], function (main) {
+        main.init();
+    });
+
+    </script>
+    <script id="tpl-first-tag" type = "text/tpl">
+        <div class="row first-tag-page" v-show="show">
+            <div class="col-xs-12 text-center ">
+                <h3>选择您想要的标签</h3>
+                <ul class="tag-first-list list-inline">
+                    <li class="tag-item" v-for="item in tagsFirstList"  v-on:click="chooseFirstTag(item, $event)"  >
+                        <div class="tag-item-text">{{item.firstLabel}}</div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </script>
+    <script id="tpl-photo-page" type = "text/tpl">
+        <div class="row photo-page" v-show="show" >
+            <div class="col-xs-12 text-left text-color-primary nav-wrap">
+                <div class="tag-nav " @click="backFirstList()">
+                    {{nav.first.firstLabel}}
+                </div>
+                <div class="tag-nav" @click="backSecondList()">
+                    {{nav.second.secondLabel}}
+                </div>
+            </div>
+
+            <div class="list-wrap col-xs-12 text-center text-color-primary">
+                <div class="iScroll-wrapper">
+                    <div class="scroller ">
+                        <!-- <div class="pull-down">
+                            <span class="am-icon-arrow-down pull-label" style="display: none;">下拉刷新</span>
+                            <span class="am-icon-spinner am-icon-spin pull-loading" ></span>
+                        </div> -->
+                        <div class="row">
+                            <div class="col-xs-6 col-sm-3 first-list">
+                                <ul class="photo-list list-inline row">
+                                    <li v-for="item in photos.list" v-bind:class="['col-xs-12', $index%4==0 ? 'first' : '', $index%4==1 ? 'second' : '', $index%4==2 ? 'third' : '', $index%4==3 ? 'forth' : '']" @click="choosePhoto(item, $event)"  >
+                                        <div class="thumbnail photo-item">
+                                            <img v-bind:src="item.url" class="">
+                                            </img>
+                                        <div>
+                                    </li>
+                                </ul>    
+                            </div>
+                            <div class="col-xs-6 col-sm-3 second-list">
+                                <ul class="photo-list list-inline row">
+                                    <li v-for="item in photos.list" v-bind:class="[ 'col-xs-12', $index%4==0 ? 'first' : '', $index%4==1 ? 'second' : '', $index%4==2 ? 'third' : '', $index%4==3 ? 'forth' : '']" @click="choosePhoto(item, $event)"  >
+                                         <div class="thumbnail photo-item">
+                                            <img v-bind:src="item.url" class="">
+                                            </img>
+                                        <div>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="col-xs-6 col-sm-3 third-list">
+                                <ul class="photo-list list-inline row">
+                                    <li v-for="item in photos.list" v-bind:class="['col-xs-12', $index%4==0 ? 'first' : '', $index%4==1 ? 'second' : '', $index%4==2 ? 'third' : '', $index%4==3 ? 'forth' : '']" @click="choosePhoto(item, $event)"   >
+                                        <div class="thumbnail photo-item">
+                                            <img v-bind:src="item.url" class="">
+                                            </img>
+                                        <div>
+                                    </li>
+                                </ul>    
+                            </div>
+                            <div class="col-xs-6 col-sm-3 forth-list">
+                                <ul class="photo-list list-inline row">
+                                    <li v-for="item in photos.list" v-bind:class="['col-xs-12', $index%4==0 ? 'first' : '', $index%4==1 ? 'second' : '', $index%4==2 ? 'third' : '', $index%4==3 ? 'forth' : '']" @click="choosePhoto(item, $event)"  >
+                                        <div class="thumbnail photo-item">
+                                            <img v-bind:src="item.url" class="">
+                                            </img>
+                                        <div>
+                                    </li>
+                                </ul>    
+                            </div>
+                        </div>
+                        
+                        <div class="up-down ">
+                            <span v-show="loadStatus == 0" class="load-more-data btn bg-color-primary" @click="loadMore()" >加载更多</span>
+                            <span v-show="loadStatus == 1" class="loading-data am-icon-spinner am-icon-spin">正在加载...</span>
+                            <span v-show="loadStatus == 2" class="no-more-data">没有更多了</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div @click="backTop" class="back-top" v-show="backTopShow">
+                <div class="back-top-mask"></div>
+                <div class="back-top-content glyphicon glyphicon-arrow-up text-center"></div>
+            </div>
+        </div>
+    </script>
+    <script id="tpl-post-msg" type = "text/tpl">
+        <div class="container-fluid post-msg" v-show="show" style="display:none;">
+            <div class="row">
+                <div class="col-xs-12 col-sm-6 msg-wrap">
+                    <form v-on:submit.prevent="submit">
+                        <div class="form-group">
+                            <label for="msg-input" class="text-color-primary">要给图中加的话</label>
+                            <input id="msg-input" placeholder="输入..." v-model="msg" class="form-control">
+                        </div>
+                        <div class="form-group text-right">
+                            <span v-on:click="imgOnly" class="magic-btn text-warning text-center bg-color-primary">换图</span>
+                            <button type="submit" class="btn bg-color-primary" v-bind:disabled="enable">合成</button>
+                        </div>
+                    </form>                
+                </div>
+                <div class="col-xs-12 col-sm-6 text-center img-wrap" v-show="img">
+                    <canvas id="img-canvas" class="img-canvas" v-bind:width="canvasWidth" v-bind:height="canvasHeight"></canvas>
+                    <img v-bind:src="cvsUrl" v-show="cvsUrl">
+                </div>
+            </div>
+        </div>
+    </script>
+    <script id="tpl-second-tag" type = "text/tpl">
+        <div class="row second-tag-page" v-show="show">
+            <div class="col-xs-12 text-left text-primary nav-wrap">
+                <div class="tag-nav " @click="backFirstList()">
+                    {{nav.firstLabel}}
+                </div>
+            </div>
+            <div class="list-wrap col-xs-12 text-center text-primary">
+                
+                <ul class="tag-second-list list-inline">
+                    <li class="tag-item" v-for="item in tagsSecondList" v-on:click="chooseSecondTag(item, $event)"  >
+                        <div  class="tag-item-text">{{item.secondLabel}}</div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </script>
 </body>
 </html>

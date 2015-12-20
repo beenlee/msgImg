@@ -29,6 +29,7 @@
     background: rgb(236,236,236);
     padding-top: 20px;
     padding-bottom: 20px;
+    .animation(slideDown 1s);
     // .mask {
     //     position: absolute;
     //     top: 0;
@@ -38,12 +39,14 @@
     //     .opacity(0.5);
     // }
     .img-wrap {
+        perspective: 800;
         margin-top: 20px;
         // margin-bottom: 20px;
         // max-height: 300px;
         // overflow-y: auto;
         // background: #44d8c1; 
         img {
+            .animation(imageShow 1s);
             width: 100%;
         }
     }
@@ -52,7 +55,7 @@
         margin-left: 0;
         line-height: 30px;
         font-size: 15px;
-        width: 30px;
+        width: 50px;
         height: 30px;
         border-radius: 15px;
     }
@@ -101,6 +104,42 @@
     height: 40px;
     background: @bg-primary;
     color: #ffffff;  
+}
+
+.loading {
+    z-index: 1000;
+    position: absolute;
+    /* margin-top: 50%; */
+    // margin-left: 50%;
+    // left: -50px;
+    /* margin-right: auto; */
+    top: 40px;
+    width: 100%;
+    height: 5px;
+    // .square(100px);
+    // transform: translateY(-50%);
+    // border-radius: 10px;
+    overflow: hidden;
+    // .mask {
+    //     position: absolute;
+    //     top: 0;
+    //     left: 0;
+    //     .square(100%);
+    //     .opacity(0.7);
+    //     background-color: #000000;
+    // }
+    // .context {
+    //     color: @color-primary;
+    //     margin-top: 50%;
+    //     transform: translateY(-50%);    
+    // }
+    // .loading-icon {
+    //     .animation(cycle 2s linear infinite);
+    // }
+    .progress-bar {
+        background: @bg-primary;
+        .animation(loading 1s linear infinite);
+    }
 }
 
 .first-tag-page {
@@ -278,6 +317,37 @@
     to {
         transform:rotateX(360deg);
     }
+}
+
+@keyframes slideDown {
+    from  {top: -100%;} 
+    to {top: 40px;}
+}
+
+@keyframes imageShow {
+    // from  {
+        // transform: scale(0, 0) rotateX(0) rotateY(0);
+        // .rotateX(0);
+        // .rotateY(0);
+    // } 
+    // to {
+        // transform: scale(100%, 100%) rotateX(360deg) rotateY(360deg);
+        // .rotateX(360deg);
+        // .rotateY(360deg);
+    // }
+    0%{transform:scale3d(0, 0, 0) rotateZ(-360deg);} 
+    // 50%{transform:scale3d(0.5, 0.5, 0.5) rotateX(180deg);} 
+    100%{transform:scale3d(1, 1, 1) rotateZ(360deg);}
+}
+
+@keyframes loading {
+    0% {
+        width: 0;
+    } 
+    // 50%{transform:scale3d(0.5, 0.5, 0.5) rotateX(180deg);} 
+    100% {
+        width: 100%;
+    }    
 }
 
 /* 小屏幕（平板，大于等于 768px） */

@@ -16,21 +16,37 @@ exports.output = path.resolve(__dirname, 'output');
 exports.getProcessors = function () {
     var lessProcessor = new LessCompiler();
     var cssProcessor = new CssCompressor();
-    var moduleProcessor = new ModuleCompiler();
+    // var jsProcessor = new JsCompressor({
+    //     files: [ 'src/*/*.js', '*.coffee' ]
+    // });
     var jsProcessor = new JsCompressor();
     var pathMapperProcessor = new PathMapper();
     var addCopyright = new AddCopyright();
+    var moduleProcessor = new ModuleCompiler({
+        configFile: 'module.conf'
+    });
+    var tplMerger = new TplMerge({
+        pluginIds: ['text']
+    });
+    var html2JsCompiler = new Html2JsCompiler({
+        extnames: ['tpl']
+    });
 
-    return {
-        'default': [
-            lessProcessor, moduleProcessor, pathMapperProcessor
-        ],
+    // return {
+    //     'default': [
+    //         lessProcessor, moduleProcessor, pathMapperProcessor
+    //     ],
 
-        'release': [
-            lessProcessor, cssProcessor, moduleProcessor,
+    //     'release': [
+    //         lessProcessor, cssProcessor, moduleProcessor,
+    //         jsProcessor, pathMapperProcessor, addCopyright
+    //     ]
+    // };
+
+    return [
+            lessProcessor, cssProcessor, /*html2JsCompiler, tplMerger,*/ moduleProcessor,
             jsProcessor, pathMapperProcessor, addCopyright
-        ]
-    };
+        ];
 };
 
 exports.exclude = [

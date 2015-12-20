@@ -3,21 +3,31 @@
  * @author: lidianbin(lidianbin@baidu.com)
  * @Date:   2015-12-03 13:20:06
  * @Last Modified by:   lidianbin
- * @Last Modified time: 2015-12-17 01:06:20
+ * @Last Modified time: 2015-12-20 12:39:40
  */
 
 'use strict';
 define(function (require) {
-    var postMsgTpl = require('text!./postMsg.tpl');
-    var photoPageTpl = require('text!./photoPage.tpl');
-    var firstTagTpl = require('text!./firstTag.tpl');
-    var secondTagTpl = require('text!./secondTag.tpl');
+    // var postMsgTpl = require('text!./postMsg.tpl');
+    // var photoPageTpl = require('text!./photoPage.tpl');
+    // var firstTagTpl = require('text!./firstTag.tpl');
+    // var secondTagTpl = require('text!./secondTag.tpl');
+
+    var postMsgTpl = $('#tpl-post-msg').html();
+    var photoPageTpl = $('#tpl-photo-page').html();
+    var firstTagTpl = $('#tpl-first-tag').html();
+    var secondTagTpl = $('#tpl-second-tag').html();
 
     // console.log(postMsgTpl);
 
     var fastClick = require('fastclick');
     var Vue = require('vue');
-    Vue.config.debug = true;
+    // var halfWord = 'abcdefghijkl';
+    // var halfWord = 'DDJSJAKQIALA';
+    // var halfWord = '我的说话菲德尔';
+
+    // Vue.config.debug = true;
+
     var firstTag = Vue.extend({
         template: firstTagTpl,
         // el: '.first-tag-page',
@@ -56,10 +66,14 @@ define(function (require) {
             },
 
             firstPageInit: function (callback) {
+                this.$dispatch('loading');
                 var url = '/hack/parentLabel/all';
-                $.getJSON(url, function (data) {
+                $.getJSON(url).then(function (data) {
+                    // this.$dispatch('loaded');
                     this.tagsFirstList = data.data;
                     typeof callback === 'function' && callback();
+                }.bind(this)).always(function (e) {
+                    this.$dispatch('loaded');
                 }.bind(this));
             }
         }
@@ -97,11 +111,13 @@ define(function (require) {
                 // url = '/hack/childrenLabel/parent';
                 this.nav = firstTag;
                 this.tagsSecondList = [];
-
-                $.getJSON(url, {id: firstTag.id}, function (data) {
+                this.$dispatch('loading');
+                $.getJSON(url, {id: firstTag.id}).then(function (data) {
                     var secondTag = data.data;
                     this.tagsSecondList = secondTag;
                     typeof callback === 'function' && callback();
+                }.bind(this)).always(function (e) {
+                    this.$dispatch('loaded');
                 }.bind(this));
             },
 
@@ -140,7 +156,7 @@ define(function (require) {
         },
         events: {
             // show: 'show',
-            showOrHide: 'showOrHide',
+            // showOrHide: 'showOrHide',
             imgOnly: 'imgOnly',
             enter: function (pageName, photo) {
                 if (pageName === 'postMsg') {
@@ -151,8 +167,16 @@ define(function (require) {
                         this.img = photo.url;
                         // this.show = true;
                     }
+                    // else {
+                    //     this.img = null;
+                    //     this.msg = '';
+                    //     this.cvsUrl = '';
+                    // }
                 }
                 else {
+                    this.img = null;
+                    this.msg = '';
+                    this.cvsUrl = '';
                     this.show = false;
                 }
             }
@@ -178,25 +202,25 @@ define(function (require) {
             //     this.show = true;
 
             // },
-            showOrHide: function (item) {
-                if (this.show === true) {
-                    this.show = false;
-                    this.msg = '';
-                    this.img = null;
-                    this.canvasHeight = 0;
-                    this.textLine = 1;
-                    this.$nextTick(function () {
-                        $('.main').show();
-                    });
-                }
-                else {
-                    this.show = true;
-                    this.$nextTick(function () {
-                        $('.main').hide();
-                    });
+            // showOrHide: function (item) {
+            //     if (this.show === true) {
+            //         this.show = false;
+            //         this.msg = '';
+            //         this.img = null;
+            //         this.canvasHeight = 0;
+            //         this.textLine = 1;
+            //         this.$nextTick(function () {
+            //             $('.main').show();
+            //         });
+            //     }
+            //     else {
+            //         this.show = true;
+            //         this.$nextTick(function () {
+            //             $('.main').hide();
+            //         });
 
-                }
-            },
+            //     }
+            // },
             submit: function () {
                 if (this.msg === '') {
                     return false;
@@ -214,7 +238,8 @@ define(function (require) {
 
             imgOnly: function () {
                 var url = '/hack/picture/get/picture/0';
-                $.post(url, {q: this.msg}, function (data) {
+                this.$dispatch('loading');
+                $.post(url, {q: this.msg}, 'json').then(function (data) {
                     console.log(data);
                     if (data.status === 0) {
                         this.img = data.data.url;
@@ -238,12 +263,15 @@ define(function (require) {
                         this.loadStatus = 0;
                     }
                     // this.refreshScroll();
-                }.bind(this), 'json');
+                }.bind(this)).always(function (e) {
+                    this.$dispatch('loaded');
+                }.bind(this));
             },
 
 
             renderImg: function () {
-                var countOneLine = 16;
+                this.cvsUrl = '';
+                var countOneLine = 20;
                 var textList = this.msg.split('');
                 var len = textList.length;
                 this.textLine = Math.ceil(len / countOneLine);
@@ -252,17 +280,23 @@ define(function (require) {
                 // 如果有图片
                 if (this.img) {
                     var img = new Image();
+                    this.$dispatch('loading');
                     img.src = this.img;
                     // img.setAttribute('crossOrigin', 'anonymous');
                     img.onload = function (e) {
+                        this.$dispatch('loaded');
                         console.log(img.width + '-' + img.height);
                         // console.log(e);
                         w = 320;
-                        h = 320 + 20 * img.height / img.width;
-                        this.canvasHeight = h + 40 + 30 + this.textLine * 30;
+                        h = 320 * (img.height / img.width);
+                        var canvasHeight = h + 40 + 20 + (this.textLine * 30);
+                        this.canvasHeight = ((this.textLine === 0) ? canvasHeight + 30 * 2 : canvasHeight);
                         this.$nextTick(function () {
                             this.clearCanvas();
                             this.getCtx().drawImage(img, 20, 20, w, h);
+                            if (this.textLine === 0) {
+                                this.getCtx().strokeRect(20, h + 40, 320, 60);
+                            }
                             this.renderText(textList, countOneLine, h);
                             this.updataImg();
                             // var imgData = this.getCtx().getImageData(0, 0, canvas.width, canvas.height);
@@ -285,30 +319,42 @@ define(function (require) {
 
             renderText: function (textList, countOneLine, h) {
                 // 如果有文字
+                var x = 20;
+                var y = 40 + h + 20;
+                var ctx = this.getCtx();
                 if (this.msg) {
-                    var x = 20;
-                    var y = 40 + h + 30;
                     // var maxWidth = w;
-                    var ctx = this.getCtx();
-                    ctx.font="20px Georgia";
+                    ctx.font = '16px Microsoft YaHei';
                     ctx.fillStyle = '#333333';
                     $.each(textList, function (index, item) {
                         var lineNum = Math.floor(index / countOneLine);
                         var count = index % countOneLine;
                         ctx.fillText(
                             item,
-                            x + 20 * count,
-                            y + 30 * lineNum,
-                            20
+                            x + (16 * count),
+                            y + (25 * lineNum),
+                            16
                         );
                     });
+                }
+                else {
+                    ctx.font = '16px Microsoft YaHei';
+                    ctx.fillStyle = '#cccccc';
+                    ctx.fillText(
+                        '文字显示区域',
+                        x,
+                        y,
+                        320
+                    );
                 }
             },
 
             updataImg: function () {
                 var cvs = this.getCanvas();
                 var url = cvs.toDataURL('image/png');
-                this.cvsUrl = url;
+                this.$nextTick(function () {
+                    this.cvsUrl = url;
+                });
             },
 
             getCtx: function () {
@@ -338,7 +384,9 @@ define(function (require) {
 
         watch: {
             img: function (val, oldVal) {
-                this.renderImg();
+                this.$nextTick(function () {
+                    this.renderImg();
+                });
                 // postPage.clearCanvas();
                 // if (val) {
                 //     var img = new Image();
@@ -507,7 +555,8 @@ define(function (require) {
         el: '.body',
         data: {
             pageStack: [],
-            backBtnShow: false
+            backBtnShow: false,
+            loadingShow: true
         },
         // 在创建实例时 `events` 选项简单地调用 `$on`
         events: {
@@ -520,7 +569,18 @@ define(function (require) {
                 this.$broadcast('enter', pageName, args);
             },
 
-            backPage: 'backPage'
+            backPage: 'backPage',
+
+            loading: function () {
+                console.log('loading');
+                this.loadingShow = true;
+            },
+
+            loaded: function () {
+                console.log('loaded');
+                this.loadingShow = false;
+            }
+
         },
         watch: {
             pageStack: function (val, oldVal) {
@@ -575,35 +635,6 @@ define(function (require) {
             bodyPageVue.$emit('init');
         }
     };
-
-
-// ------------------------
-    // var tagsPage;
-    // var photoPage;
-
-    var events = {
-        init: function () {
-
-            // this.initScroll();
-            $(window).scroll(function (e) {
-                // var scrollTop = $(this).scrollTop
-                // console.log(e.target.scrollTop + e.target.clientHeight, '/', e.target.scrollHeight);
-                if ($(this).scrollTop() + $(this).height() >= $(document).height()) {
-                    photoPage.photoPageVue.$emit('loadMore');
-                }
-                if ($(this).scrollTop() > $(this).height()) {
-                    $('.back-top').show();
-                }
-                else {
-                    $('.back-top').hide();
-                }
-
-            });
-        }
-    };
-
-
-    
 
     return page;
 });

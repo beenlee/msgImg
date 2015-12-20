@@ -1,6 +1,6 @@
 <div class="row second-tag-page" v-show="show">
     <div class="col-xs-12 text-left text-primary nav-wrap">
-        <div class="tag-nav " @click="backFirstPage()">
+        <div class="tag-nav " @click="backFirstList()">
             {{nav.firstLabel}}
         </div>
     </div>
