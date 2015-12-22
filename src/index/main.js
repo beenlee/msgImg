@@ -3,7 +3,7 @@
  * @author: lidianbin(lidianbin@baidu.com)
  * @Date:   2015-12-03 13:20:06
  * @Last Modified by:   lidianbin
- * @Last Modified time: 2015-12-20 12:39:40
+ * @Last Modified time: 2015-12-21 22:51:37
  */
 
 'use strict';
@@ -271,12 +271,17 @@ define(function (require) {
 
             renderImg: function () {
                 this.cvsUrl = '';
-                var countOneLine = 20;
+                var w = 320;
+                var h = 320;
+                var gap = 20;
+                var fontSize = 20;
+                var lineHeight = 30;
+
+                var countOneLine = Math.floor(w / fontSize);
                 var textList = this.msg.split('');
                 var len = textList.length;
                 this.textLine = Math.ceil(len / countOneLine);
-                var w = 320;
-                var h = 320;
+
                 // 如果有图片
                 if (this.img) {
                     var img = new Image();
@@ -287,17 +292,17 @@ define(function (require) {
                         this.$dispatch('loaded');
                         console.log(img.width + '-' + img.height);
                         // console.log(e);
-                        w = 320;
-                        h = 320 * (img.height / img.width);
-                        var canvasHeight = h + 40 + 20 + (this.textLine * 30);
-                        this.canvasHeight = ((this.textLine === 0) ? canvasHeight + 30 * 2 : canvasHeight);
+                        // w = 320;
+                        h = w * (img.height / img.width);
+                        var canvasHeight = h + gap * 2 + gap + (this.textLine * lineHeight);
+                        this.canvasHeight = ((this.textLine === 0) ? canvasHeight + lineHeight * 2 : canvasHeight);
                         this.$nextTick(function () {
                             this.clearCanvas();
-                            this.getCtx().drawImage(img, 20, 20, w, h);
+                            this.getCtx().drawImage(img, gap, gap, w, h);
                             if (this.textLine === 0) {
-                                this.getCtx().strokeRect(20, h + 40, 320, 60);
+                                this.getCtx().strokeRect(gap, h + gap * 2, w, lineHeight * 2);
                             }
-                            this.renderText(textList, countOneLine, h);
+                            this.renderText(textList, countOneLine, h, gap, fontSize, lineHeight);
                             this.updataImg();
                             // var imgData = this.getCtx().getImageData(0, 0, canvas.width, canvas.height);
                         });
@@ -309,7 +314,7 @@ define(function (require) {
                 else {
                     this.$nextTick(function () {
                         this.clearCanvas();
-                        this.renderText(textList, countOneLine, h);
+                        this.renderText(textList, countOneLine, h, gap, fontSize, lineHeight);
                         this.updataImg();
                     });
                 }
@@ -317,23 +322,23 @@ define(function (require) {
                 // console.log(val);
             },
 
-            renderText: function (textList, countOneLine, h) {
+            renderText: function (textList, countOneLine, h, gap, fontSize, lineHeight) {
                 // 如果有文字
-                var x = 20;
-                var y = 40 + h + 20;
+                var x = gap;
+                var y = 2 * gap + h + gap;
                 var ctx = this.getCtx();
                 if (this.msg) {
                     // var maxWidth = w;
-                    ctx.font = '16px Microsoft YaHei';
+                    ctx.font = fontSize + 'px Microsoft YaHei';
                     ctx.fillStyle = '#333333';
                     $.each(textList, function (index, item) {
                         var lineNum = Math.floor(index / countOneLine);
                         var count = index % countOneLine;
                         ctx.fillText(
                             item,
-                            x + (16 * count),
-                            y + (25 * lineNum),
-                            16
+                            x + (gap * count),
+                            y + (lineHeight * lineNum),
+                            20
                         );
                     });
                 }
